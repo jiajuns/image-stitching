@@ -8,4 +8,14 @@ There are different methods to do image stitching. Some of them are based on cam
 4. Wrap image and stitch image
 
 
-# Setup environment
+## Setup environment
+
+Create an virtualenv and use the requirements.txt to reconstruct environment:
+
+    virtualenv -p python3 python3-env
+    source python3-env/bin/activate
+    pip install -r requirements.txt
+
+
+## Keypoints detections (SIFT)
+
