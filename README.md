@@ -4,9 +4,9 @@ There are different methods to do image stitching. Some of them are based on cam
 
 1. Image features detections (DoG)
 2. Feature Description (SIFT)
-2. Keypoints matching
-3. Compute Homography matrix between two frames
-4. Wrap image and stitch image
+3. Keypoints matching
+4. Compute Homography matrix between two frames
+5. Wrap image and stitch image
 
 
 ## Setup environment
@@ -44,3 +44,16 @@ Once DoG is computed, the algorithm will search for local extrema over differenc
 ![alt text](https://docs.opencv.org/3.1.0/sift_local_extrema.jpg)
 
 ## Feature Description (SIFT)
+Key locations are defined as maxima and minima of the result of difference of Gaussians function applied in scale space to a series of smoothed and resampled images. Low-contrast candidate points and edge response points along an edge are discarded. Dominant orientations are assigned to localized keypoints.
+
+![alt text](https://qph.fs.quoracdn.net/main-qimg-a471637e843649a6b9483bcc70ba62c1.webp)
+
+The figure above illustrates the computation of the keypoint descriptor. First the image gradient mangnitudes and orientations are sampled around the keypoint location, as shown on the left. They are then weighted by a Gaussian window, indicate by the overlaid circle. In order to achieve orientation invariance, the coordinates of the descriptor and gradient orientations are rotated relative to the keypoint orientation. These samples are then accumulated into orientation histograms summarizing the contents over 4*4 subregions.
+
+The descriptor is formed from a vector containing the values of all the orientation histogram entries, corresponding to the lenghts of the arrows on the right side of above figure. For example, vector of this figure has '2x2x8=32' elements. In order to reduce the effects of illumination change, the vector is normalized to unit length. Another detail is reduce the influence of large gradient magnitudes by thresholding the values in the unit feature vector to no larger than 0.2, and then renormalizing to unit length.
+
+## Keypoint Matching
+The idea behind keypoint matching is to take the descriptor of one feature in first set and is matched with all other features in second set using some distance calculation. And the closest one is returned. In our code we use [flann](https://docs.opencv.org/2.4/modules/flann/doc/flann_fast_approximate_nearest_neighbor_search.html#id1) provided by opencv.
+
+## Compute Homography matrix
+Homography matrix is a special case of fundamental matrix, which applies to scenes which are planar or far away. A planar homography H satisfies the constraint x' = Hx (x' represents the second image; and x represent the first image). H is a 3x3 matrix of rank 3 in which there is a one-to-one point correspondence between the first and second images. 
